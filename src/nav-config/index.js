@@ -1,0 +1,1 @@
+export { default as AdminDashboardMenu } from './admin/dashboard'
