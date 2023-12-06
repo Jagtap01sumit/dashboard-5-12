@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 import EmployeeDocForm from "@/components/forms/employ-doc-form";
 import { AddCircleOutlineIcon } from "@mui/icons-material/AddCircleOutline";
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 const EmployeeDetails = ({ employee }) => {
   const [section, setSection] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -37,6 +37,7 @@ const EmployeeDetails = ({ employee }) => {
     const file = event.target.files[0];
     setSelectedFile(file);
   };
+
   return (
     <>
       <Typography variant="h1" className="fw-semibold">
@@ -166,46 +167,37 @@ const EmployeeDetails = ({ employee }) => {
             <Typography variant="h4" className="fw-semibold">
               Documents
             </Typography>
-          {!section ?  <Button className="detailAvatarEditBtn"  onClick={toggleSection}>
-              <Edit /> Edit
-            </Button>:<Button className="detailAvatarEditBtn" onClick={toggleSection}>
-              <Edit /> Close
-            </Button>}
-            <Button className="detailAvatarEditBtn" >
+            {!section ? (
+              <Button className="detailAvatarEditBtn" onClick={toggleSection}>
+                <Edit /> Edit
+              </Button>
+            ) : (
+              <Button className="detailAvatarEditBtn" onClick={toggleSection}>
+                <Edit /> Close
+              </Button>
+            )}
+            <Button className="detailAvatarEditBtn">
               <Edit /> Add
             </Button>
-          
           </Box>
           <Box mt={2}>
             <Grid container spacing={2}>
-              {/* {employee?.teams?.map((team) => ( */}
-              {/* <>
-                  <Grid item xs={12} sm={5}>
-                    <Box>
-                      <Typography className="empDetailLabel">
-                        Team Name
-                      </Typography>
-                      <Typography variant="h5">{team.teamName}</Typography>
-                    </Box>
-                  </Grid>
-                  <Grid item xs={12} sm={5}>
-                    <Box>
-                      <Typography className="empDetailLabel">
-                        Team Description
-                      </Typography>
-                      <Typography variant="h5">{team.teamDesc}</Typography>
-                    </Box>
-                  </Grid>
-                </> */}
-              {/* ))} */}
+              {employee &&
+                Object.keys(employee?.documents[0]).map((key) => (
+                  <DocumentItem
+                    key={key}
+                    label={key}
+                    url={employee?.documents[0][key]}
+                  />
+                ))}
             </Grid>
           </Box>
         </Box>
         {section && (
           <Box mt={2} display="flex" alignItems="center">
-            <Grid cotnainer spacing={2}>
+            <Grid width={"100%"} cotnainer spacing={2}>
               <EmployeeDocForm />
-         
+
               {/* <label>Adhar card</label>
               <input
                 accept="image/*"
@@ -246,3 +238,24 @@ const EmployeeDetails = ({ employee }) => {
 };
 
 export default EmployeeDetails;
+
+const DocumentItem = ({ label, url }) => {
+  return (
+    <>
+      <Grid item xs={12} sm={5}>
+        <Box>
+          <Typography className="empDetailLabel">Team Name</Typography>
+          <Typography variant="h5">{label}</Typography>
+        </Box>
+      </Grid>
+      <Grid item xs={12} sm={5}>
+        <Box>
+          <Typography className="empDetailLabel">Team Description</Typography>
+          <a href={url} target="_blank">
+            View Document
+          </a>
+        </Box>
+      </Grid>
+    </>
+  );
+};
