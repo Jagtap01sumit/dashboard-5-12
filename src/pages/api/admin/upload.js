@@ -1,3 +1,4 @@
+import Employee from "@/models/employeeModel";
 import multer from "multer";
 import { join, extname } from "path";
 import { promisify } from "util";
@@ -17,11 +18,11 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage }).fields([
-  { name: 'adhaarCard', maxCount: 1 },
-  { name: 'panCard', maxCount: 1 },
-  { name: 'marksheet10th', maxCount: 1 },
-  { name: 'marksheet12th', maxCount: 1 },
-  { name: 'voterId', maxCount: 1 },
+  { name: "adhaarCard", maxCount: 1 },
+  { name: "panCard", maxCount: 1 },
+  { name: "marksheet10th", maxCount: 1 },
+  { name: "marksheet12th", maxCount: 1 },
+  { name: "voterId", maxCount: 1 },
 ]);
 
 const promisifiedUpload = promisify(upload);
@@ -35,17 +36,34 @@ export const config = {
 export default async function handler(req, res) {
   try {
     await promisifiedUpload(req, res);
+    const documents = {};
+    Object.keys(req.files).forEach((key) => {
+      documents[`documents.${key}`] = join(
+        // process.cwd(),
+        "/doc",
+        "upload",
+        req.files[key][0].filename
+      );
+    });
 
-    const filePaths = Object.keys(req.files).map((key) =>
-      join(process.cwd(), "public", "doc", "upload", req.files[key][0].filename)
+    console.log("Files upload successful. Saved at:", documents);
+
+    // console.log(
+    //   await Employee.findByIdAndUpdate(req.body.id, {
+    //     $push: { documents: { $each: filePaths } },
+    //   })
+    // );
+
+    console.log(
+      await Employee.findByIdAndUpdate(req.body.id, {
+        $set: documents,
+      })
     );
 
-    console.log("Files upload successful. Saved at:", filePaths);
-    
     res.status(200).json({
       message: "Files uploaded successfully",
       success: true,
-      filePaths,
+      documents,
     });
   } catch (error) {
     console.error("Error uploading files:", error);
@@ -55,7 +73,6 @@ export default async function handler(req, res) {
     });
   }
 }
-
 
 // import multer from "multer";
 // import { join, extname } from "path";

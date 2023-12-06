@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Box, Button, Grid, Typography } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import { useSelector } from "react-redux";
+import { useRouter } from "next/router";
 
 const EmployeeDocForm = () => {
   const [files, setFiles] = useState({
@@ -13,6 +15,8 @@ const EmployeeDocForm = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
+  const router = useRouter();
+  const { id } = router.query;
 
   const handleFileChange = (e, documentType) => {
     const selectedFile = e.target.files[0];
@@ -41,6 +45,8 @@ const EmployeeDocForm = () => {
         formData.append(documentType, file);
       }
     });
+
+    formData.append("id", id);
 
     try {
       const response = await fetch("/api/admin/upload", {
@@ -80,49 +86,57 @@ const EmployeeDocForm = () => {
               </Typography>
 
               {documentsName.map(({ type, label }, index) => (
-                <Box p={2} mt={2} key={index} className="empDetail">
-                  <Box className="d-flex justify-content-between align-items-center">
-                    <Typography variant="h4" className="fw-semibold">
-                      {label}
-                    </Typography>
-                  </Box>
+                <Box
+                  key={index}
+                  display="flex"
+                  flexDirection={"row"}
+                  alignItems="center"
+                  justifyContent={"space-between"}
+                >
+                  <Box width={"50%"} p={2} mt={2} className="empDetail">
+                    <Box className="d-flex justify-content-between align-items-center">
+                      <Typography variant="h4" className="fw-semibold">
+                        {label}
+                      </Typography>
+                    </Box>
 
-                  <Box mt={2}>
-                    <Grid container spacing={2}>
-                      <Grid item xs={12}>
-                        {/* Set xs={12} to make it full-width */}
-                        <input
-                          accept="image/*"
-                          style={{ display: "none" }}
-                          id={`contained-button-file-${type}`}
-                          type="file"
-                          onChange={(e) => handleFileChange(e, type)}
-                          name={type}
-                        />
-                        <label htmlFor={`contained-button-file-${type}`}>
-                          <Button
-                            variant="contained"
-                            component="span"
-                            startIcon={<CloudUploadIcon />}
-                          >
-                            Upload File
-                          </Button>
-                        </label>
+                    <Box mt={2}>
+                      <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                          {/* Set xs={12} to make it full-width */}
+                          <input
+                            accept="image/*"
+                            style={{ display: "none" }}
+                            id={`contained-button-file-${type}`}
+                            type="file"
+                            onChange={(e) => handleFileChange(e, type)}
+                            name={type}
+                          />
+                        </Grid>
+                        {files[type] && (
+                          <Box mt={2} width="100%">
+                            {" "}
+                            {/* Add width="100%" to make it full-width */}
+                            <Typography variant="body1" color="textSecondary">
+                              Selected File:
+                            </Typography>
+                            <Typography variant="body2">
+                              {files[type].name}
+                            </Typography>
+                          </Box>
+                        )}
                       </Grid>
-                      {files[type] && (
-                        <Box mt={2} width="100%">
-                          {" "}
-                          {/* Add width="100%" to make it full-width */}
-                          <Typography variant="body1" color="textSecondary">
-                            Selected File:
-                          </Typography>
-                          <Typography variant="body2">
-                            {files[type].name}
-                          </Typography>
-                        </Box>
-                      )}
-                    </Grid>
+                    </Box>
                   </Box>
+                  <label htmlFor={`contained-button-file-${type}`}>
+                    <Button
+                      variant="contained"
+                      component="span"
+                      startIcon={<CloudUploadIcon />}
+                    >
+                      Upload File
+                    </Button>
+                  </label>
                 </Box>
               ))}
 

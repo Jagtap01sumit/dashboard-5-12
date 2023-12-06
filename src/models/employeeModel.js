@@ -29,7 +29,7 @@ const employeeSchema = new mongoose.Schema({
   },
   isManager: {
     type: Boolean,
-    default: false
+    default: false,
   },
   teams: {
     type: [
@@ -41,9 +41,16 @@ const employeeSchema = new mongoose.Schema({
     required: [true, "Please provide a team name"],
     default: [],
   },
+  documents: {
+    type: Map,
+    of: String,
+  },
 });
 
+// const Employee =
+//   mongoose.models.employees || mongoose.model("employees", employeeSchema);
+
 const Employee =
-  mongoose.models.employees || mongoose.model("employees", employeeSchema);
+  mongoose.models.employees2 || mongoose.model("employees2", employeeSchema);
 
 export default Employee;
