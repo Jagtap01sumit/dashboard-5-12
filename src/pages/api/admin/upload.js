@@ -57,7 +57,7 @@ export default async function handler(req, res) {
 //   destination: async (req, file, cb) => {
 //     try {
 //       const employeeName = req.body.employeeName;
-
+//        console.log(req.body.employeeName)
 //       if (!employeeName) {
 //         console.error("Employee name not provided");
 //         return cb({

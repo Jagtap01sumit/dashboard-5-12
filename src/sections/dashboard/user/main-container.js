@@ -21,7 +21,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { createEmployeeProfile } from "@/redux/actions/admin/employee-action";
 import { AdminEmployeesSection } from "@/sections";
 import EmployeeDocForm from "@/components/forms/employ-doc-form";
-
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 const MainContainer = () => {
   const { message, error, actionT } = useSelector(
     (state) => state.adminEmployeeReducer
