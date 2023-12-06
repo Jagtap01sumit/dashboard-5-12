@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Box, Button, Grid, Typography } from "@mui/material";
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 const EmployeeDocForm = () => {
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -45,7 +45,7 @@ const EmployeeDocForm = () => {
       setLoading(false);
     }
   };
- 
+
   const documentsName = [
     "adhaar card",
     "pan card",
@@ -59,74 +59,68 @@ const EmployeeDocForm = () => {
       <Grid container>
         <Grid item xs={12} sm={12}>
           <Box px={2} mt={2}>
-            <Box>
+            <Box >
               <Typography variant="h3" className="fw-medium">
-                Personal Information*
+                Upload Documents
               </Typography>
-            </Box>
-            <Box mt={2}>
-              <Grid container spacing={2}>
-                {/* {documentsName.map((doc)=>( */}
-                <Grid item xs={12} sm={12}>
-                  <Typography variant="h3" className="fw-medium">
-                    {/* {doc} */}
-                  </Typography>
-                  {/* <input
-                    id="file-input"
-                    type="file"
-                    name="documents"
-                    onChange={handleFileChange}
-                    required
-                  /> */}
-                  {/* {error ? (
-                    <Typography className="text-danger">
-                      {error}
-                    </Typography>
-                  ) : null} */}
-                  <input
-                    accept="image/*"
-                    style={{ display: "none" }}
-                    id="contained-button-file"
-                    type="file"
-                    onChange={handleFileChange}
-                  />
-                  <label htmlFor="contained-button-file">
-                    <Button
-                      variant="contained"
-                      component="span"
-                      startIcon={<CloudUploadIcon />}
-                    >
-                      Upload File
-                    </Button>
-                  </label>
-                  {selectedFile && (
-                    <Box mt={2}>
-                      <Typography variant="body1" color="textSecondary">
-                        Selected File:
-                      </Typography>
-                      <Typography variant="body2">
-                        {selectedFile.name}
-                      </Typography>
-                    </Box>
-                  )}
-                </Grid>
-                {/* ))} */}
 
-                <Grid item xs={12}>
-                  <Button
-                    className="btn--dark"
-                    type="submit"
-                    onClick={handleSubmit}
-                    sx={{
-                      width: "15rem",
-                      "@media only screen and (max-width: 600px)": {
-                        width: "100%",
-                      },
-                    }}
-                  >
-                    Save
-                  </Button>
-                </Grid>
+              {documentsName.map((doc) => (
+                <Box p={2} mt={2} className="empDetail "> 
+                {/* d-flex justify-content-between */}
+                  <Box className="d-flex justify-content-between align-items-center">
+                    <Typography variant="h4" className="fw-semibold">
+                      {doc}
+                    </Typography>
+                  </Box>
+
+                  <Box mt={2}>
+                    <Grid container spacing={2}>
+                      <Grid item xs={12} sm={12}>
+                        <input
+                          accept="image/*"
+                          style={{ display: "none" }}
+                          id="contained-button-file"
+                          type="file"
+                          onChange={handleFileChange}
+                        />
+                        <label htmlFor="contained-button-file">
+                          <Button
+                            variant="contained"
+                            component="span"
+                            startIcon={<CloudUploadIcon />}
+                          >
+                            Upload File
+                          </Button>
+                        </label>
+                        {selectedFile && (
+                          <Box mt={2}>
+                            <Typography variant="body1" color="textSecondary">
+                              Selected File:
+                            </Typography>
+                            <Typography variant="body2">
+                              {selectedFile.name}
+                            </Typography>
+                          </Box>
+                        )}
+                      </Grid>
+                    </Grid>
+                  </Box>
+                </Box>
+               ))}
+              <Grid item xs={12} mt={2}>
+                <Button
+                  className="btn--dark"
+                  type="submit"
+                  onClick={handleSubmit}
+                  sx={{
+                    width: "15rem",
+                    "@media only screen and (max-width: 600px)": {
+                      width: "100%",
+                    },
+                  }}
+                >
+                  Save
+                </Button>
               </Grid>
             </Box>
           </Box>
