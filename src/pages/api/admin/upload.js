@@ -1,23 +1,30 @@
 import multer from "multer";
 import { join, extname } from "path";
-import Employee from "@/models/employeeModel";
-import Team from "@/models/teamModal";
+import { promisify } from "util";
 
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-      cb(null, join(process.cwd(), "public", "doc", "upload"));
-    },
-    filename: (req, file, cb) => {
-      const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-      const fileExtension = extname(file.originalname);
-      cb(
-        null,
-        `${file.originalname.split(".")[0]}-${uniqueSuffix}${fileExtension}`
-      );
-    },
-  });
+  destination: (req, file, cb) => {
+    cb(null, join(process.cwd(), "public", "doc", "upload"));
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    const fileExtension = extname(file.originalname);
+    cb(
+      null,
+      `${file.originalname.split(".")[0]}-${uniqueSuffix}${fileExtension}`
+    );
+  },
+});
 
-const upload = multer({ storage });
+const upload = multer({ storage }).fields([
+  { name: 'adhaarCard', maxCount: 1 },
+  { name: 'panCard', maxCount: 1 },
+  { name: 'marksheet10th', maxCount: 1 },
+  { name: 'marksheet12th', maxCount: 1 },
+  { name: 'voterId', maxCount: 1 },
+]);
+
+const promisifiedUpload = promisify(upload);
 
 export const config = {
   api: {
@@ -26,29 +33,30 @@ export const config = {
 };
 
 export default async function handler(req, res) {
-    try {
-      await new Promise((resolve, reject) => {
-        upload.single("documents")(req, res, async (err) => {
-          if (err) {
-            console.error("Error uploading file:", err);
-            return reject({
-              status: 400,
-              message: "File upload failed",
-              success: false,
-            });
-          }
+  try {
+    await promisifiedUpload(req, res);
 
-          const filePath = join(process.cwd(), "public", "doc", "upload", req.file.filename);
-          console.log("File upload successful. Saved at:", filePath);
-          resolve();
-        });
-      });
+    const filePaths = Object.keys(req.files).map((key) =>
+      join(process.cwd(), "public", "doc", "upload", req.files[key][0].filename)
+    );
 
-      res.status(200).json({ message: "File uploaded successfully", success: true });
-    } catch (error) {
-      res.status(error.status || 500).json({ message: error.message, success: false });
-    }
+    console.log("Files upload successful. Saved at:", filePaths);
+    
+    res.status(200).json({
+      message: "Files uploaded successfully",
+      success: true,
+      filePaths,
+    });
+  } catch (error) {
+    console.error("Error uploading files:", error);
+    res.status(500).json({
+      message: "An unexpected error occurred during file upload",
+      success: false,
+    });
   }
+}
+
+
 // import multer from "multer";
 // import { join, extname } from "path";
 // import fs from "fs/promises";

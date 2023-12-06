@@ -1,31 +1,46 @@
 import React, { useState } from "react";
 import { Box, Button, Grid, Typography } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+
 const EmployeeDocForm = () => {
-  const [file, setFile] = useState(null);
+  const [files, setFiles] = useState({
+    adhaarCard: null,
+    panCard: null,
+    marksheet10th: null,
+    marksheet12th: null,
+    voterId: null,
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
-  const [selectedFile, setSelectedFile] = useState(null);
 
-  const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
-    const file = e.target.files[0];
-    setSelectedFile(file);
+  const handleFileChange = (e, documentType) => {
+    const selectedFile = e.target.files[0];
+    setFiles((prevFiles) => ({
+      ...prevFiles,
+      [documentType]: selectedFile,
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!file) {
-      setError("Please select a file");
+    const selectedFiles = Object.values(files);
+
+    if (selectedFiles.every((file) => file === null)) {
+      setError("Please select at least one file");
       return;
     }
 
     setLoading(true);
 
     const formData = new FormData();
-    formData.append("documents", file);
+
+    Object.entries(files).forEach(([documentType, file]) => {
+      if (file !== null) {
+        formData.append(documentType, file);
+      }
+    });
 
     try {
       const response = await fetch("/api/admin/upload", {
@@ -34,9 +49,9 @@ const EmployeeDocForm = () => {
       });
 
       if (response.ok) {
-        setSuccessMessage("File uploaded successfully");
+        setSuccessMessage("Files uploaded successfully");
       } else {
-        setError("Error uploading file");
+        setError("Error uploading files");
       }
     } catch (error) {
       console.error("Error:", error);
@@ -47,11 +62,11 @@ const EmployeeDocForm = () => {
   };
 
   const documentsName = [
-    "adhaar card",
-    "pan card",
-    "10th Marksheet",
-    "12th Marksheet",
-    "voter id",
+    { type: "adhaarCard", label: "Adhaar Card" },
+    { type: "panCard", label: "PAN Card" },
+    { type: "marksheet10th", label: "10th Marksheet" },
+    { type: "marksheet12th", label: "12th Marksheet" },
+    { type: "voterId", label: "Voter ID" },
   ];
 
   return (
@@ -59,31 +74,32 @@ const EmployeeDocForm = () => {
       <Grid container>
         <Grid item xs={12} sm={12}>
           <Box px={2} mt={2}>
-            <Box >
+            <Box>
               <Typography variant="h3" className="fw-medium">
                 Upload Documents
               </Typography>
 
-              {documentsName.map((doc) => (
-                <Box p={2} mt={2} className="empDetail "> 
-                {/* d-flex justify-content-between */}
+              {documentsName.map(({ type, label }, index) => (
+                <Box p={2} mt={2} key={index} className="empDetail">
                   <Box className="d-flex justify-content-between align-items-center">
                     <Typography variant="h4" className="fw-semibold">
-                      {doc}
+                      {label}
                     </Typography>
                   </Box>
 
                   <Box mt={2}>
                     <Grid container spacing={2}>
-                      <Grid item xs={12} sm={12}>
+                      <Grid item xs={12}>
+                        {/* Set xs={12} to make it full-width */}
                         <input
                           accept="image/*"
                           style={{ display: "none" }}
-                          id="contained-button-file"
+                          id={`contained-button-file-${type}`}
                           type="file"
-                          onChange={handleFileChange}
+                          onChange={(e) => handleFileChange(e, type)}
+                          name={type}
                         />
-                        <label htmlFor="contained-button-file">
+                        <label htmlFor={`contained-button-file-${type}`}>
                           <Button
                             variant="contained"
                             component="span"
@@ -92,21 +108,36 @@ const EmployeeDocForm = () => {
                             Upload File
                           </Button>
                         </label>
-                        {selectedFile && (
-                          <Box mt={2}>
-                            <Typography variant="body1" color="textSecondary">
-                              Selected File:
-                            </Typography>
-                            <Typography variant="body2">
-                              {selectedFile.name}
-                            </Typography>
-                          </Box>
-                        )}
                       </Grid>
+                      {files[type] && (
+                        <Box mt={2} width="100%">
+                          {" "}
+                          {/* Add width="100%" to make it full-width */}
+                          <Typography variant="body1" color="textSecondary">
+                            Selected File:
+                          </Typography>
+                          <Typography variant="body2">
+                            {files[type].name}
+                          </Typography>
+                        </Box>
+                      )}
                     </Grid>
                   </Box>
                 </Box>
-               ))}
+              ))}
+
+              {files.length > 0 && (
+                <Box mt={2}>
+                  <Typography variant="body1" color="textSecondary">
+                    Selected Files:
+                  </Typography>
+                  <Typography variant="body2">
+                    {selectedFiles.map((file, index) => (
+                      <div key={index}>{file.name}</div>
+                    ))}
+                  </Typography>
+                </Box>
+              )}
               <Grid item xs={12} mt={2}>
                 <Button
                   className="btn--dark"
