@@ -2,7 +2,11 @@ import React, { useEffect } from "react";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 import { parse } from "cookie";
-import { authenticateUser, logoutAdmin, logoutUser } from "@/redux/actions/authAction";
+import {
+  authenticateUser,
+  logoutAdmin,
+  logoutUser,
+} from "@/redux/actions/authAction";
 import authMiddleware from "@/middleware";
 import { toast } from "react-toastify";
 import { Head } from "@/sections";
@@ -14,15 +18,15 @@ const AdminDashboard = ({ token }) => {
   );
   const dispatch = useDispatch();
   const router = useRouter();
-
+  console.log(userInfo);
   const handleLogoutAdminUser = () => {
     dispatch(logoutUser());
-  router.push('/user/auth')
+    router.push("/user/auth");
   };
 
   useEffect(() => {
-      if (token) dispatch(authenticateUser(token))
-  }, [token])
+    if (token) dispatch(authenticateUser(token));
+  }, [token]);
 
   useEffect(() => {
     if (!error && message === "logout successful") {
@@ -42,16 +46,16 @@ const AdminDashboard = ({ token }) => {
 };
 
 export const getServerSideProps = authMiddleware(async (context) => {
-    const { req } = context;
+  const { req } = context;
 
-    const cookies = parse(req.headers.cookie || '');
-    const token = cookies['token'] || null
+  const cookies = parse(req.headers.cookie || "");
+  const token = cookies["token"] || null;
 
-    return {
-        props: {
-            token
-        }
-    };
+  return {
+    props: {
+      token,
+    },
+  };
 });
 
 export default AdminDashboard;

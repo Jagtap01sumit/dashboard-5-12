@@ -18,7 +18,10 @@ export default async function handler(req, res) {
           otp: null,
         });
 
-        const secret = process.env.JWT_SECRET || "usersecreatekey";
+        const secret =
+          "employeedashboardjwttoken" ||
+          process.env.JWT_SECRET ||
+          "usersecreatekey";
         console.log("Fetched: ", user._id, user.email);
         const tokenData = {
           id: user._id,

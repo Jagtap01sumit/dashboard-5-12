@@ -54,6 +54,8 @@ export default async function handler(req, res) {
     //   })
     // );
 
+    console.log("TAGF", req.body);
+
     console.log(
       await Employee.findByIdAndUpdate(req.body.id, {
         $set: documents,

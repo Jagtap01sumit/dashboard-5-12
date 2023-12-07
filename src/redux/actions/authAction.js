@@ -43,7 +43,7 @@ export const loginAdmin = (data) => async (dispatch) => {
 //user
 export const loginUser = (data) => async (dispatch) => {
   try {
-    dispatch({ type: actionTypes.CLEAR_STATE });
+    // dispatch({ type: actionTypes.CLEAR_STATE });
     const response = await fetch("/api/user/login", {
       method: "POST",
       body: JSON.stringify(data),
@@ -133,26 +133,28 @@ export const forgotPassword = (data) => async (dispatch) => {
   }
 };
 
-export const authenticateUser = (token) => async (dispatch) => {
-  dispatch({ type: actionTypes.CLEAR_STATE });
-  try {
-    const response = await fetch("/api/admin/get-token-data", {
-      method: "POST",
-      body: JSON.stringify({ token }),
-    });
-    const { success, user, message } = await response.json();
-    if (success && user !== null && user !== undefined && user !== "") {
-      dispatch({
-        type: actionTypes.GET_DATA_FROM_TOKEN_SUCCESS,
-        payload: { user, message },
+export const authenticateUser =
+  (token, userType = "admin") =>
+  async (dispatch) => {
+    // dispatch({ type: actionTypes.CLEAR_STATE });
+    try {
+      const response = await fetch(`/api/${userType}/get-token-data`, {
+        method: "POST",
+        body: JSON.stringify({ token }),
       });
-    } else if (!success && user === null) {
-      dispatch({
-        type: actionTypes.GET_DATA_FROM_TOKEN_FAILURE,
-        payload: message,
-      });
+      const { success, user, message } = await response.json();
+      if (success && user !== null && user !== undefined && user !== "") {
+        dispatch({
+          type: actionTypes.GET_DATA_FROM_TOKEN_SUCCESS,
+          payload: { user, message },
+        });
+      } else if (!success && user === null) {
+        dispatch({
+          type: actionTypes.GET_DATA_FROM_TOKEN_FAILURE,
+          payload: message,
+        });
+      }
+    } catch (error) {
+      dispatch({ type: actionTypes.GET_DATA_FROM_TOKEN_FAILURE });
     }
-  } catch (error) {
-    dispatch({ type: actionTypes.GET_DATA_FROM_TOKEN_FAILURE });
-  }
-};
+  };

@@ -18,17 +18,13 @@ const SingleEmployee = ({ token }) => {
     (state) => state.adminEmployeeReducer
   );
 
-  const { id } = router.query;
-
-  console.log(userInfo);
-
   useEffect(() => {
-    if (token) dispatch(authenticateUser(token));
+    if (token) dispatch(authenticateUser(token, "user"));
   }, [token]);
 
   useEffect(() => {
-    if (id) dispatch(getEmployeeDetail(id));
-  }, [id]);
+    if (userInfo?._id) dispatch(getEmployeeDetail(userInfo?._id));
+  }, [userInfo]);
 
   return (
     <>

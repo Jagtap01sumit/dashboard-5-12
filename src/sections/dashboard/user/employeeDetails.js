@@ -38,7 +38,7 @@ const EmployeeDetails = ({ employee }) => {
     setSelectedFile(file);
   };
   // console.log(employee?.documents[0])
-  console.log(employee)
+  console.log(employee);
 
   return (
     <>
@@ -185,6 +185,7 @@ const EmployeeDetails = ({ employee }) => {
           <Box mt={2}>
             <Grid container spacing={2}>
               {employee &&
+                employee.documents &&
                 Object.keys(employee?.documents).map((key) => (
                   <DocumentItem
                     key={key}
@@ -196,9 +197,9 @@ const EmployeeDetails = ({ employee }) => {
           </Box>
         </Box>
         {section && (
-          <Box mt={2}  className="border">
-            <Grid container spacing={2}> 
-            {/* here  */}
+          <Box mt={2} className="border">
+            <Grid container spacing={2}>
+              {/* here  */}
               <EmployeeDocForm />
 
               {/* <label>Adhar card</label>
