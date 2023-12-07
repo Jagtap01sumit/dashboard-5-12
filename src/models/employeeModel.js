@@ -45,6 +45,9 @@ const employeeSchema = new mongoose.Schema({
     type: Map,
     of: String,
   },
+  otp: {
+    type: String,
+  },
 });
 
 // const Employee =

@@ -6,11 +6,10 @@ export default async function handler(req, res) {
     const data = JSON.parse(req.body);
     console.log("user data", data);
 
-    const { email} = data;
+    const { email } = data;
 
-    const user = await Employee.findOne({ email: email }); 
+    const user = await Employee.findOne({ email: email });
 
-  
     const secret = process.env.JWT_SECRET || "usersecreatekey";
     const tokenData = {
       id: user._id,
@@ -26,11 +25,11 @@ export default async function handler(req, res) {
       user: { ...user.toObject(), email },
       success: true,
       email: user.email,
-      token:token,
-      id: JSON.stringify(user._id)
+      token: token,
+      id: JSON.stringify(user._id),
     };
-    console.log("res",response)
-    console.log("myid",user._id)
+    console.log("res", response);
+    console.log("myid", user._id);
     console.log(token);
     res.setHeader(
       "Set-Cookie",

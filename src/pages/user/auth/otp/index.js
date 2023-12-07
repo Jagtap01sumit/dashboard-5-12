@@ -1,5 +1,5 @@
 "user client";
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import {
   Button,
@@ -13,26 +13,35 @@ import {
 import { BuildCircleTwoTone } from "@mui/icons-material";
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+
+import { verifyOTPUser } from "@/redux/actions/authAction";
+import actionTypes from "@/redux/actions/actionTypes";
 const Index = () => {
   const [userEnteredOTP, setUserEnteredOTP] = useState("");
   const [message, setMessage] = useState("");
   const [generatedOTP, setGeneratedOTP] = useState("");
-  
+  const {
+    userInfo,
+    error,
+    message: _message,
+    actionT,
+  } = useSelector((state) => state.authReducer);
+
   const router = useRouter();
-  
+  const dispatch = useDispatch();
+
   const userEmail =
-  typeof localStorage !== "undefined"
-  ? localStorage.getItem("userEmail")
-  : null;
+    typeof localStorage !== "undefined"
+      ? localStorage.getItem("userEmail")
+      : null;
   console.log(userEmail);
 
   const handleChange = (e) => {
     setOtpInput(e.target.value);
   };
   console.log("email", userEmail);
- 
 
-  
   const handleSendOTP = async (e) => {
     e.preventDefault();
     try {
@@ -46,20 +55,12 @@ const Index = () => {
 
       const data = await response.json();
       setMessage(data.message);
-
-      if (data.generatedOTP) {
-        setGeneratedOTP(data.generatedOTP);
-      } else {
-        console.error("Generated OTP not received from the server.", error);
-      }
     } catch (error) {
       console.error("Error sending OTP:", error);
       setMessage("Error sending OTP. Please try again.");
     }
   };
-useEffect(()=>{
-
-})
+  useEffect(() => {});
   const handleVerifyOTP = async (e) => {
     e.preventDefault();
     if (!userEnteredOTP) {
@@ -67,27 +68,38 @@ useEffect(()=>{
       return;
     }
     try {
-      const response = await fetch("/api/user/verify-otp", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ userEnteredOTP, generatedOTP }),
-      });
-      const data = await response.json();
-      console.log(data);
-      if(response.status==200){
-        toast.success(data.message);
-        router.push('/user/dashboard')
-      }else{
-        toast.error(data.message)
-      }
-      setMessage(data.message);
+      dispatch(verifyOTPUser({ otp: userEnteredOTP, email: userEmail }));
     } catch (error) {
-      console.error("Error verifying OTP:", error);
-      setMessage("OTP verification failed. Please try again.");
+      console.error("Error Verifying otp:", error);
     }
+    // try {
+    //   const response = await fetch("/api/user/verify-otp", {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify({ userEnteredOTP, userEmail }),
+    //   });
+    //   const data = await response.json();
+    //   console.log(data);
+    //   if (response.status == 200) {
+    //     toast.success(data.message);
+    //     router.push("/user/dashboard");
+    //   } else {
+    //     toast.error(data.message);
+    //   }
+    //   setMessage(data.message);
+    // } catch (error) {
+    //   console.error("Error verifying OTP:", error);
+    //   setMessage("OTP verification failed. Please try again.");
+    // }
   };
+
+  useEffect(() => {
+    if (actionT == actionTypes.USER_VERIFY_SUCCESS) {
+      router.push("/user/dashboard");
+    }
+  }, [actionT]);
 
   return (
     <div className="container d-flex justify-content-center align-items-center min-vh-100">

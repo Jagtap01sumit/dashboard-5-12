@@ -20,6 +20,8 @@ const SingleEmployee = ({ token }) => {
 
   const { id } = router.query;
 
+  console.log(userInfo);
+
   useEffect(() => {
     if (token) dispatch(authenticateUser(token));
   }, [token]);
