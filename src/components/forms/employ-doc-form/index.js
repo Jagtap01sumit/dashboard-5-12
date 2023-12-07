@@ -86,99 +86,101 @@ const EmployeeDocForm = () => {
 
   return (
     <Box>
-      <Grid container>
-        <Grid item xs={12} sm={12}>
-          <Box px={2} mt={2}>
-            <Box>
-              <Typography variant="h3" className="fw-medium">
-                Upload Documents
-              </Typography>
+      <Grid items>
+        {/* <Grid > */}
+        <Box px={2} mt={2} fullWidth>
+          <Box fullWidth className="p-3">
+            <Typography variant="h3" className="fw-medium">
+              Upload Documents
+            </Typography>
 
-              {documentsName.map(({ type, label }, index) => (
-                <Box
-                  key={index}
-                  display="flex"
-                  flexDirection={"row"}
-                  alignItems="center"
-                  justifyContent={"space-between"}
-                >
-                  <Box width={"50%"} p={2} mt={2} className="empDetail">
-                    <Box className="d-flex justify-content-between align-items-center">
-                      <Typography variant="h5" >
-                        {label}
-                      </Typography>
-                    </Box>
-
-                    <Box mt={2} marginLeft={2}>
-                      <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                          {/* Set xs={12} to make it full-width */}
-                          <input
-                            accept="image/*"
-                            style={{ display: "none" }}
-                            id={`contained-button-file-${type}`}
-                            type="file"
-                            onChange={(e) => handleFileChange(e, type)}
-                            name={type}
-                          />
-                        </Grid>
-                        {files[type] && (
-                          <Box mt={2} width="100%">
-                            {" "}
-                            {/* Add width="100%" to make it full-width */}
-                            <Typography variant="body1" color="textSecondary">
-                              Selected File:
-                            </Typography>
-                            <Typography variant="body2">
-                              {files[type].name}
-                            </Typography>
-                          </Box>
-                        )}
-                      </Grid>
-                    </Box>
+            {documentsName.map(({ type, label }, index) => (
+              <Grid
+                key={index}
+                container
+                className="d-flex align-items-center justify-content-between"
+              >
+                <Grid items p={2} mt={2} className="empDetail "  >
+                  <Box
+                    fullWidth
+                    className="d-flex align-items-center justify-content-center" 
+                  >
+                    <Typography variant="h5">{label}</Typography>
                   </Box>
-                  <label htmlFor={`contained-button-file-${type}`}>
-                    <Button
-                      variant="contained"
-                      component="span"
-                      startIcon={<CloudUploadIcon />}
-                    >
-                      Upload File
-                    </Button>
-                  </label>
-                </Box>
-              ))}
 
-              {files.length > 0 && (
-                <Box mt={2}>
-                  <Typography variant="body1" color="textSecondary">
-                    Selected Files:
-                  </Typography>
-                  <Typography variant="body2">
-                    {selectedFiles.map((file, index) => (
-                      <div key={index}>{file.name}</div>
-                    ))}
-                  </Typography>
-                </Box>
-              )}
-              <Grid item xs={12} mt={2}>
-                <Button
-                  className="btn--dark"
-                  type="submit"
-                  onClick={handleSubmit}
-                  sx={{
-                    width: "15rem",
-                    "@media only screen and (max-width: 600px)": {
-                      width: "100%",
-                    },
-                  }}
+                  <Box mt={2} marginLeft={2}>
+                    <Grid container spacing={2}>
+                      <Grid item xs={12}>
+                        {/* Set xs={12} to make it full-width */}
+                        <input
+                          accept="image/*"
+                          style={{ display: "none" }}
+                          id={`contained-button-file-${type}`}
+                          type="file"
+                          onChange={(e) => handleFileChange(e, type)}
+                          name={type}
+                        />
+                      </Grid>
+                      {files[type] && (
+                        <Box mt={2} width="100%">
+                          {" "}
+                          {/* Add width="100%" to make it full-width */}
+                          <Typography variant="body1" color="textSecondary">
+                            Selected File:
+                          </Typography>
+                          <Typography variant="body2">
+                            {files[type].name}
+                          </Typography>
+                        </Box>
+                      )}
+                    </Grid>
+                  </Box>
+                </Grid>
+                <Box
+                  htmlFor={`contained-button-file-${type}`}
+                  className="d-flex align-items-center justify-content-center"
                 >
-                  Save
-                </Button>
+                  <Button
+                    variant="contained"
+                    component="span"
+                    startIcon={<CloudUploadIcon />}
+                  >
+                    Upload File
+                  </Button>
+                </Box>
               </Grid>
-            </Box>
+            ))}
+
+            {files.length > 0 && (
+              <Box mt={2}>
+                <Typography variant="body1" color="textSecondary">
+                  Selected Files:
+                </Typography>
+                <Typography variant="body2">
+                  {selectedFiles.map((file, index) => (
+                    <div key={index}>{file.name}</div>
+                  ))}
+                </Typography>
+              </Box>
+            )}
+            <Grid item xs={12} mt={2}>
+              <Button
+                className="btn--dark"
+                type="submit"
+                onClick={handleSubmit}
+                sx={{
+                  width: "15rem",
+                  "@media only screen and (max-width: 600px)": {
+                    width: "100%",
+                  },
+                }}
+              >
+                Save
+              </Button>
+            </Grid>
           </Box>
-        </Grid>
+        </Box>
+        {/* </Grid> */}
       </Grid>
     </Box>
   );

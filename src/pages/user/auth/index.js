@@ -20,10 +20,16 @@ export default function index() {
 
   const handleLogin = async (data) => {
     try {
+       dispatch(loginUser(data));
+      // console.log(data)
+      // alert(data.email)
+      // alert(data.id)
+      localStorage.setItem("userEmail", data.email);
       
-      dispatch(loginUser(data));
-        localStorage.setItem("userEmail", data.email);
-  
+      
+   
+     
+      
     } catch (error) {
       console.error("Error signing up:", error);
     }
@@ -33,6 +39,8 @@ export default function index() {
     if (!error && actionT === "login") {
       toast.success(message);
       // console.log("Email to push:", router.query.email);
+    
+  
       router.push("/user/auth/otp");
     } else if (error && actionT === "login") {
       toast.error(message);

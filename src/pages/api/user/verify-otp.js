@@ -1,7 +1,7 @@
 export default (req, res) => {
   if (req.method === "POST") {
     const { userEnteredOTP, generatedOTP } = req.body;
-    console.log("genrated otp",generatedOTP);
+    console.log("genrated otp", generatedOTP);
     if (verifyOTP(userEnteredOTP, generatedOTP)) {
       res.status(200).json({ message: "OTP verification successful" });
     } else {
@@ -13,8 +13,8 @@ export default (req, res) => {
 };
 
 function verifyOTP(userEnteredOTP, generatedOTP) {
-  console.log(userEnteredOTP===generatedOTP )
-  console.log("user enterd",userEnteredOTP );
-  console.log("generated",generatedOTP);
+  console.log(userEnteredOTP === generatedOTP);
+  console.log("user enterd", userEnteredOTP);
+  console.log("generated", generatedOTP);
   return userEnteredOTP === generatedOTP;
 }

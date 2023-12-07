@@ -30,6 +30,7 @@ const Index = () => {
     setOtpInput(e.target.value);
   };
   console.log("email", userEmail);
+ 
 
   
   const handleSendOTP = async (e) => {

@@ -37,8 +37,8 @@ const EmployeeDetails = ({ employee }) => {
     const file = event.target.files[0];
     setSelectedFile(file);
   };
-  console.log(employee?.documents)
-  console.log(employee?.documents)
+  // console.log(employee?.documents[0])
+  console.log(employee)
 
   return (
     <>
@@ -51,14 +51,14 @@ const EmployeeDetails = ({ employee }) => {
             <Grid item xs={12} sm={1.3}>
               <Box className="detailAvatar">
                 {employee?.displayProfile && (
-                  <img src={employee.displayProfile} className="img-fluid" />
+                  <img src={employee?.displayProfile} className="img-fluid" />
                 )}
               </Box>
             </Grid>
             <Grid item xs={12} sm={9.7} className="d-flex align-items-center">
               <Box>
                 <Typography variant="h3" className="fw-semibold" gutterBottom>
-                  {employee.firstName} {employee.lastName}
+                  {employee?.firstName} {employee?.lastName}
                 </Typography>
                 <Typography sx={{ color: "#848A94" }}>
                   {employee.designation}
@@ -196,8 +196,9 @@ const EmployeeDetails = ({ employee }) => {
           </Box>
         </Box>
         {section && (
-          <Box mt={2} display="flex" alignItems="center">
-            <Grid width={"100%"} cotnainer spacing={2}>
+          <Box mt={2}  className="border">
+            <Grid container spacing={2}> 
+            {/* here  */}
               <EmployeeDocForm />
 
               {/* <label>Adhar card</label>
@@ -246,13 +247,13 @@ const DocumentItem = ({ label, url }) => {
     <>
       <Grid item xs={12} sm={5}>
         <Box>
-          <Typography className="empDetailLabel">Team Name</Typography>
+          <Typography className="empDetailLabel">Doc Name</Typography>
           <Typography variant="h5">{label}</Typography>
         </Box>
       </Grid>
       <Grid item xs={12} sm={5}>
         <Box>
-          <Typography className="empDetailLabel">Team Description</Typography>
+          <Typography className="empDetailLabel">View</Typography>
           <a href={url} target="_blank">
             View Document
           </a>

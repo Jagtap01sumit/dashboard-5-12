@@ -51,6 +51,22 @@ const authMiddleware = (handler) => {
         }
 
 
+        //user
+
+        if (req.url === '/user/auth') {
+            if (cookies['token']) {
+                res.writeHead(302, { Location: '/admin/dashboard/profile/' });
+                res.end();
+                return { props: {} };
+            }
+        } else if (req.url === '/user/dashboard/') {
+            if (!cookies['token']) {
+                res.writeHead(302, { Location: '/user/auth/' });
+                res.end();
+                return { props: {} };
+            }
+        }
+
 
         return await handler(context);
     };

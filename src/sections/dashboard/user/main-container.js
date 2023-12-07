@@ -160,7 +160,7 @@ const MainContainer = () => {
                         </div>
                         <div className="py-3">
                           <Typography align="center">
-                            Uplod Profile Picture
+                            Uplode Profile Picture
                           </Typography>
                         </div>
                       </>

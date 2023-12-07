@@ -1,58 +1,47 @@
-
-
 import jwt from "jsonwebtoken";
 import Employee from "@/models/employeeModel";
+
 export default async function handler(req, res) {
-  let data;
-
   try {
-    data = JSON.parse(req.body);
-    console.log("user data",data)
-  } catch (error) {
-    console.error("Error parsing JSON input:", error);
-    
-  }
-  try {
-    const { email } = data;
+    const data = JSON.parse(req.body);
+    console.log("user data", data);
 
-   
-    const user = await Employee.findOne({ email: email });
-    console.log(user); 
+    const { email} = data;
 
-    if (!user) {
-      return res
-        .status(400)
-        .json({ message: "User does not exist.", success: false, user: null });
-    }
+    const user = await Employee.findOne({ email: email }); 
 
-    // Create a JWT token
+  
+    const secret = process.env.JWT_SECRET || "usersecreatekey";
     const tokenData = {
       id: user._id,
       email: user.email,
     };
-    console.log(tokenData);
-    const token = jwt.sign(tokenData, "userdashboardjwttoken", {
+
+    const token = jwt.sign(tokenData, secret, {
       expiresIn: "1d",
     });
-    console.log(token);
 
-    // Set email in response
     const response = {
       message: "Click send for OTP.",
-      user: { ...user.toObject(), email }, // Include email in the user object
+      user: { ...user.toObject(), email },
       success: true,
       email: user.email,
+      token:token,
+      id: JSON.stringify(user._id)
     };
-   
-    // localStorage.setItem('userEmail', user.email);
+    console.log("res",response)
+    console.log("myid",user._id)
+    console.log(token);
     res.setHeader(
       "Set-Cookie",
-      ` token=${token}; HttpOnly; Max-Age="86400000"; Path=/; Secure; SameSite=Strict`
+      `token=${token}; HttpOnly; Max-Age=86400; Path=/; Secure; SameSite=Strict`
     );
 
-    // Send the response
     res.status(200).json(response);
   } catch (error) {
-    return res.status(500).json({ error: error.message, success: false });
+    console.error("Error:", error.message);
+    return res
+      .status(500)
+      .json({ error: "Internal Server Error", success: false });
   }
 }

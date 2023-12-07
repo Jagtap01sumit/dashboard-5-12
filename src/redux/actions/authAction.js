@@ -35,9 +35,11 @@ export const loginUser = (data) => async (dispatch) => {
     try {
         dispatch({ type: actionTypes.CLEAR_STATE })
         const response = await fetch('/api/user/login', { method: "POST", body: JSON.stringify(data) })
-        const { user, success, message } = await response.json();
+        const { user, id,success, message } = await response.json();  //id successfully received here
+        console.log("authAct",  response)
+        
         if (success && user !== null) {
-            dispatch({ type: actionTypes.LOGIN_USER_SUCCESS, payload: message })
+            dispatch({ type: actionTypes.LOGIN_USER_SUCCESS, payload: message,id })
         } else if (!success && user === null) {
             dispatch({ type: actionTypes.LOGIN_USER_FAILURE, payload: message })
         }
@@ -48,6 +50,18 @@ export const loginUser = (data) => async (dispatch) => {
 
 //user
 
+export const logoutUser = () => async (dispatch) => {
+    dispatch({ type: actionTypes.CLEAR_STATE })
+    try {
+        const response = await fetch('/api/user/logout', { method: 'GET' })
+        const { success } = await response.json()
+        if (success) {
+            dispatch({ type: actionTypes.LOGOUT_USER_SUCCESS })
+        }
+    } catch (error) {
+        dispatch({ type: actionTypes.LOGOUT_USER_FAILURE })
+    }
+}
 export const logoutAdmin = () => async (dispatch) => {
     dispatch({ type: actionTypes.CLEAR_STATE })
     try {
