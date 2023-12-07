@@ -37,6 +37,8 @@ const EmployeeDetails = ({ employee }) => {
     const file = event.target.files[0];
     setSelectedFile(file);
   };
+  console.log(employee?.documents)
+  console.log(employee?.documents)
 
   return (
     <>
@@ -169,25 +171,25 @@ const EmployeeDetails = ({ employee }) => {
             </Typography>
             {!section ? (
               <Button className="detailAvatarEditBtn" onClick={toggleSection}>
-                <Edit /> Edit
+                <Edit /> Upload
               </Button>
             ) : (
               <Button className="detailAvatarEditBtn" onClick={toggleSection}>
                 <Edit /> Close
               </Button>
             )}
-            <Button className="detailAvatarEditBtn">
+            {/* <Button className="detailAvatarEditBtn">
               <Edit /> Add
-            </Button>
+            </Button> */}
           </Box>
           <Box mt={2}>
             <Grid container spacing={2}>
               {employee &&
-                Object.keys(employee?.documents[0]).map((key) => (
+                Object.keys(employee?.documents).map((key) => (
                   <DocumentItem
                     key={key}
                     label={key}
-                    url={employee?.documents[0][key]}
+                    url={employee?.documents[key]}
                   />
                 ))}
             </Grid>

@@ -3,6 +3,7 @@ import { Box, Button, Grid, Typography } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/router";
+import { toast } from "react-toastify";
 
 const EmployeeDocForm = () => {
   const [files, setFiles] = useState({
@@ -56,6 +57,14 @@ const EmployeeDocForm = () => {
 
       if (response.ok) {
         setSuccessMessage("Files uploaded successfully");
+        setFiles({
+          adhaarCard: null,
+          panCard: null,
+          marksheet10th: null,
+          marksheet12th: null,
+          voterId: null,
+        });
+        toast.success("File Upload Successful");
       } else {
         setError("Error uploading files");
       }
@@ -95,12 +104,12 @@ const EmployeeDocForm = () => {
                 >
                   <Box width={"50%"} p={2} mt={2} className="empDetail">
                     <Box className="d-flex justify-content-between align-items-center">
-                      <Typography variant="h4" className="fw-semibold">
+                      <Typography variant="h5" >
                         {label}
                       </Typography>
                     </Box>
 
-                    <Box mt={2}>
+                    <Box mt={2} marginLeft={2}>
                       <Grid container spacing={2}>
                         <Grid item xs={12}>
                           {/* Set xs={12} to make it full-width */}
