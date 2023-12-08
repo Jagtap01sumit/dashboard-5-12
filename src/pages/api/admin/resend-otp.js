@@ -1,6 +1,8 @@
 import Admin from "@/models/adminModel";
 import connectDB from "@/config/db";
 import bcryptjs from "bcryptjs";
+import generateOTP from "@/utils/generateOTP";
+import { TEMPLATE_VERIFY_YOUR_EMAIL, sendMail } from "@/utils/mailHelper";
 
 connectDB();
 
