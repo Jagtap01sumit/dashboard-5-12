@@ -1,21 +1,10 @@
-
-
 import Admin from "@/models/adminModel";
 import connectDB from "@/config/db";
-import bcryptjs from "bcryptjs";
+import bcryptjs, { hash } from "bcryptjs";
+import generateOTP from "@/utils/generateOTP";
+import { TEMPLATE_VERIFY_YOUR_EMAIL, sendMail } from "@/utils/mailHelper";
 
-import nodemailer from "nodemailer";//install
-
-let transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.USER_EMAIL,
-    pass: process.env.EMAIL_PASSWORD,
-
-  },
-});
 connectDB();
-
 
 export default async function handler(req, res) {
   let data;
@@ -32,27 +21,23 @@ export default async function handler(req, res) {
 
     if (user) {
       if (user._doc.verified) {
-        return res
-          .status(400)
-          .json({
-            message: "User is already exist., Try Login",
-            success: false,
-            verified: true,
-          });
+        return res.status(400).json({
+          message: "User is already exist., Try Login",
+          success: false,
+          verified: true,
+        });
       } else {
         await sendOTPverificationEmail(user._doc, res);
-        return res
-          .status(400)
-          .json({
-            message: "User is already exist, Verification Pending",
-            success: false,
-            verified: false,
-          });
+        return res.status(400).json({
+          message: "User is already exist, Verification Pending",
+          success: false,
+          verified: false,
+        });
       }
     }
 
     const salt = await bcryptjs.genSalt(10);
-    const hashedPassword = await bcryptjs.hash(data.password, salt);
+    const hashedPassword = await hash(data.password, salt);
 
     const newAdmin = new Admin({
       email: data.email,
@@ -74,19 +59,15 @@ export default async function handler(req, res) {
 
 const sendOTPverificationEmail = async ({ _id, email }, res) => {
   try {
-    const otp = `${parseInt(1000 + Math.random() * 9000)}`;
-    const mailOptions = {
-      from: process.env.USER_EMAIL,
-      to: email,
-      subject: "Verify Your Email",
-      html: `<p> Enter <b>${otp} </b> in the app to verify your email address and complete signup</p><p>This code <b> expires in 1 hour </b></p>`,
-    };
+    const otp = generateOTP();
     const saltRounds = 10;
     const hashedOTP = await bcryptjs.hash(otp, saltRounds);
 
     await Admin.findByIdAndUpdate(_id, { otp: hashedOTP });
 
-    await transporter.sendMail(mailOptions);
+    await sendMail(
+      TEMPLATE_VERIFY_YOUR_EMAIL(process.env.USER_EMAIL, email, otp)
+    );
     res.json({
       status: "PENDING",
       success: true,

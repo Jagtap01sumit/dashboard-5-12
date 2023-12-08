@@ -1,14 +1,10 @@
 import Employee from "@/models/employeeModel";
-import nodemailer from "nodemailer";
+import {
+  sendMail,
+  TEMPLATE_VERIFY_YOUR_EMAIL,
+  generateOTP,
+} from "@/utils/mailHelper";
 import bcryptjs from "bcryptjs";
-
-let transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.USER_EMAIL,
-    pass: process.env.EMAIL_PASSWORD,
-  },
-});
 
 export default async (req, res) => {
   if (req.method === "POST") {
@@ -36,25 +32,18 @@ export default async (req, res) => {
   }
 };
 
-function generateOTP() {
-  return Math.floor(1000 + Math.random() * 9000).toString();
-}
-
 const sendOTPverificationEmail = async ({ _id, email }, res) => {
   try {
     const otp = `${generateOTP()}`;
-    const mailOptions = {
-      from: process.env.USER_EMAIL,
-      to: email,
-      subject: "Verify Your Email",
-      html: `<p> Enter <b>${otp} </b> in the app to verify your email address and complete signup</p><p>This code <b> expires in 1 hour </b></p>`,
-    };
     const saltRounds = 10;
     const hashedOTP = await bcryptjs.hash(otp, saltRounds);
 
     await Employee.findByIdAndUpdate(_id, { otp: hashedOTP });
 
-    await transporter.sendMail(mailOptions);
+    await sendMail(
+      TEMPLATE_VERIFY_YOUR_EMAIL(process.env.USER_EMAIL, email, otp)
+    );
+
     return res.json({
       status: "PENDING",
       message: "Verification OTP email sent",
