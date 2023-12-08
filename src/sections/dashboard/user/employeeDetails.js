@@ -27,7 +27,7 @@ const EmployeeDetails = ({ employee }) => {
       toast.success(message);
       router.push("/admin/dashboard/user/");
     } else {
-      toast.error(message);
+      // toast.error(message);
     }
   }, [error, actionT]);
   const toggleSection = () => {
