@@ -25,10 +25,11 @@ const SingleEmployee = ({ token }) => {
   useEffect(() => {
     if (userInfo?._id) dispatch(getEmployeeDetail(userInfo?._id));
   }, [userInfo]);
+  console.log("user side",userInfo)
 
   return (
     <>
-      <Head title="Employee Detail | Admin" />
+      <Head title="Employee Detail | Employee" />
       <Layout userInfo={userInfo} />
       {employee && (
         <Box className="dashboard-main" id="employee-detail">

@@ -1,16 +1,9 @@
 import Admin from "@/models/adminModel";
 import connectDB from "@/config/db";
 import bcryptjs from "bcryptjs";
+import generateOTP from "@/utils/generateOTP";
+import { TEMPLATE_VERIFY_YOUR_EMAIL, sendMail } from "@/utils/mailHelper";
 
-import nodemailer from "nodemailer";
-
-let transporter = nodemailer.createTransport({
-  host: "gmail",
-  auth: {
-    user: process.env.USER_EMAIL,
-    pass: process.env.EMAIL_PASSWORD,
-  },
-});
 connectDB();
 
 export default async function handler(req, res) {
@@ -33,19 +26,16 @@ export default async function handler(req, res) {
 
 const sendOTPverificationEmail = async ({ _id, email }, res) => {
   try {
-    const otp = `${parseInt(1000 + Math.random() * 9000)}`;
-    const mailOptions = {
-      from: process.env.USER_EMAIL,
-      to: email,
-      subject: "Verify Your Email",
-      html: `<p> Enter <b>${otp} </b> in the app to verify your email address and complete signup</p><p>This code <b> expires in 1 hour </b></p>`,
-    };
+    const otp = generateOTP();
     const saltRounds = 10;
     const hashedOTP = await bcryptjs.hash(otp, saltRounds);
 
     await Admin.findByIdAndUpdate(_id, { otp: hashedOTP });
 
-    await transporter.sendMail(mailOptions);
+    await sendMail(
+      TEMPLATE_VERIFY_YOUR_EMAIL(process.env.USER_EMAIL, email, otp)
+    );
+
     res.json({
       status: "PENDING",
       message: "Verification OTP email sent",
@@ -62,22 +52,3 @@ const sendOTPverificationEmail = async ({ _id, email }, res) => {
     });
   }
 };
-
-//resend
-// router.post('/resendOTPVerrificationCode',async(req,res)=>{
-// try{
-//   let{userId ,email}=req.body;
-//   if(!userId || email) {
-//   throw Error("Empty user details are not allowed");
-// }else{
-//   await UserOTPVerification.deleteMany({userId});
-//   sendOTPverificationEmail({_id:userId,email},res);
-// }}catch(error){
-//   console.log(error)
-//   res.json({
-
-//     status:"Failed",
-//     message:error.message
-//   })
-// }
-// })

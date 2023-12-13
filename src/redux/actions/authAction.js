@@ -11,6 +11,7 @@ export const createAdmin = (data) => async (dispatch) => {
     const { success, message } = await response.json();
     if (success) {
       dispatch({ type: actionTypes.CREATE_ADMIN_SUCCESS, payload: message });
+      localStorage.setItem("email", data.email);
     } else if (!success) {
       dispatch({ type: actionTypes.CREATE_ADMIN_FAILURE, payload: message });
     }

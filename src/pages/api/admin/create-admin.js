@@ -1,21 +1,12 @@
-
-
 import Admin from "@/models/adminModel";
 import connectDB from "@/config/db";
-import bcryptjs from "bcryptjs";
 
-import nodemailer from "nodemailer";//install
 
-let transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.USER_EMAIL,
-    pass: process.env.EMAIL_PASSWORD,
+import bcryptjs, { hash } from "bcryptjs";
+import generateOTP from "@/utils/generateOTP";
+import { TEMPLATE_VERIFY_YOUR_EMAIL, sendMail } from "@/utils/mailHelper";
 
-  },
-});
 connectDB();
-
 
 export default async function handler(req, res) {
   let data;
@@ -29,25 +20,21 @@ export default async function handler(req, res) {
   }
   try {
     const user = await Admin.findOne({ email: data.email });
-
     if (user) {
       if (user._doc.verified) {
-        return res
-          .status(400)
-          .json({
-            message: "User is already exist., Try Login",
-            success: false,
-            verified: true,
-          });
+        return res.status(400).json({
+          message: "User is already exist., Try Login",
+          success: false,
+          verified: true,
+        });
       } else {
         await sendOTPverificationEmail(user._doc, res);
-        return res
-          .status(400)
-          .json({
-            message: "User is already exist, Verification Pending",
-            success: false,
-            verified: false,
-          });
+
+        return res.status(400).json({
+          message: "User is already exist, Verification Pending",
+          success: false,
+          verified: false,
+        });
       }
     }
 
@@ -59,10 +46,8 @@ export default async function handler(req, res) {
       password: hashedPassword,
       verified: false,
     });
-
     const savedAdmin = await newAdmin.save();
     await sendOTPverificationEmail(savedAdmin._doc, res);
-
     res
       .status(200)
       .json({ success: true, message: "Admin created successfully." });
@@ -74,19 +59,15 @@ export default async function handler(req, res) {
 
 const sendOTPverificationEmail = async ({ _id, email }, res) => {
   try {
-    const otp = `${parseInt(1000 + Math.random() * 9000)}`;
-    const mailOptions = {
-      from: process.env.USER_EMAIL,
-      to: email,
-      subject: "Verify Your Email",
-      html: `<p> Enter <b>${otp} </b> in the app to verify your email address and complete signup</p><p>This code <b> expires in 1 hour </b></p>`,
-    };
+    const otp = generateOTP();
     const saltRounds = 10;
     const hashedOTP = await bcryptjs.hash(otp, saltRounds);
 
     await Admin.findByIdAndUpdate(_id, { otp: hashedOTP });
 
-    await transporter.sendMail(mailOptions);
+    await sendMail(
+      TEMPLATE_VERIFY_YOUR_EMAIL(process.env.USER_EMAIL, email, otp)
+    );
     res.json({
       status: "PENDING",
       success: true,

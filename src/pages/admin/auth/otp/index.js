@@ -40,7 +40,7 @@ const Index = () => {
       const resJson = await res.json();
 
       if (resJson.verified) {
-        router.push("/admin/profile");
+        router.push("/admin/dashboard/profile");
       }
     } catch (error) {
       console.error("Error during form submission:", error);
@@ -92,13 +92,13 @@ const Index = () => {
             />
             <div className="flex flex-col space-y-4">
               <div className="d-flex align-items-center justify-content-center m-3">
-                <Button className="btn--dark">Verify Account</Button>
+                <Button type="submit" className="btn--dark">
+                  Verify Account
+                </Button>
               </div>
               <div className="flex flex-row items-center justify-center text-center text-sm font-medium space-x-1 text-gray-500">
                 <p>Didn't receive the code?</p>{" "}
-                <button
-                  onClick={resendOTP}
-                  className="btn">
+                <button onClick={resendOTP} className="btn">
                   Resend
                 </button>
               </div>

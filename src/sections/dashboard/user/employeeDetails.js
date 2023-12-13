@@ -178,9 +178,6 @@ const EmployeeDetails = ({ employee }) => {
                 <Edit /> Close
               </Button>
             )}
-            {/* <Button className="detailAvatarEditBtn">
-              <Edit /> Add
-            </Button> */}
           </Box>
           <Box mt={2}>
             <Grid container spacing={2}>
@@ -201,33 +198,6 @@ const EmployeeDetails = ({ employee }) => {
             <Grid container spacing={2}>
               {/* here  */}
               <EmployeeDocForm />
-
-              {/* <label>Adhar card</label>
-              <input
-                accept="image/*"
-                style={{ display: "none" }}
-                id="contained-button-file"
-                type="file"
-                onChange={handleFileChange}
-              />
-              <label htmlFor="contained-button-file">
-                <Button
-                  variant="contained"
-                  component="span"
-                  startIcon={<CloudUploadIcon />}
-                >
-                  Upload File
-                </Button>
-              </label>
-              {selectedFile && (
-                <Box mt={2}>
-                  <Typography variant="body1" color="textSecondary">
-                    Selected File:
-                  </Typography>
-                  <Typography variant="body2">{selectedFile.name}</Typography>
-              
-                </Box>
-              )} */}
             </Grid>
           </Box>
         )}

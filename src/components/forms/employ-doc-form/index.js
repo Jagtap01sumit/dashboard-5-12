@@ -19,7 +19,9 @@ const EmployeeDocForm = () => {
   const { userInfo } = useSelector((state) => state.authReducer);
 
   const id = router.query.id || userInfo._id;
-
+  // const { userInfo } = useSelector((state) => state.authReducer);
+  console.log("useInfo..................",userInfo.isAdmin)
+  
   const handleFileChange = (e, documentType) => {
     const selectedFile = e.target.files[0];
     setFiles((prevFiles) => ({
@@ -58,6 +60,14 @@ const EmployeeDocForm = () => {
 
       if (response.ok) {
         setSuccessMessage("Files uploaded successfully");
+        setFiles({
+          adhaarCard: null,
+          panCard: null,
+          marksheet10th: null,
+          marksheet12th: null,
+          voterId: null,
+        });
+        toast.success("File Upload Successful");
       } else {
         setError("Error uploading files");
       }
@@ -68,6 +78,7 @@ const EmployeeDocForm = () => {
       setLoading(false);
     }
   };
+  
 
   const documentsName = [
     { type: "adhaarCard", label: "Adhaar Card" },
@@ -76,13 +87,15 @@ const EmployeeDocForm = () => {
     { type: "marksheet12th", label: "12th Marksheet" },
     { type: "voterId", label: "Voter ID" },
   ];
-
+  if (userInfo.isAdmin) {
+    documentsName.push({ type: 'salarySlip', label: 'Salary Slip' });
+  }
   return (
     <Box>
       <Grid container>
-        <Grid item xs={12} sm={12}>
-          <Box px={2} mt={2}>
-            <Box>
+        <Grid item xs={12} sm={12} className="p-3">
+          <Box px={2} mt={2} >
+            <Box >
               <Typography variant="h3" className="fw-medium">
                 Upload Documents
               </Typography>
