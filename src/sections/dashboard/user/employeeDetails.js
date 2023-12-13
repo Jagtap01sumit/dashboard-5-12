@@ -21,6 +21,12 @@ const EmployeeDetails = ({ employee }) => {
   const handleRemoveEmployee = () => {
     if (employee) dispatch(removeEmployee(employee?._id));
   };
+  const towordEditForm=()=>{
+    router.push(`/editForm/${employee?._id}`)
+  } 
+//   <Link href={`/editTopic/${t._id}`}>
+//   <HiPencilAlt size={24} />
+// </Link>
 
   useEffect(() => {
     if (!error && actionT === "remove") {
@@ -72,7 +78,7 @@ const EmployeeDetails = ({ employee }) => {
               sm={1}
               className="d-flex justify-content-end align-items-baseline"
             >
-              <Button className="detailAvatarEditBtn">
+              <Button className="detailAvatarEditBtn" onClick={towordEditForm}>
                 <Edit /> Edit
               </Button>
             </Grid>

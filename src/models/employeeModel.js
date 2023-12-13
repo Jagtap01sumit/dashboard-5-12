@@ -50,10 +50,10 @@ const employeeSchema = new mongoose.Schema({
   },
 });
 
-// const Employee =
-//   mongoose.models.employees || mongoose.model("employees", employeeSchema);
-
 const Employee =
-  mongoose.models.employees2 || mongoose.model("employees2", employeeSchema);
+  mongoose.models.employees || mongoose.model("employees", employeeSchema);
+
+// const Employee =
+  // mongoose.models.employees2 || mongoose.model("employees2", employeeSchema);
 
 export default Employee;

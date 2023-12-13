@@ -3,7 +3,7 @@ import { Box, Button, Grid, Typography } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/router";
-
+import { toast } from 'react-toastify'
 const EmployeeDocForm = () => {
   const [files, setFiles] = useState({
     adhaarCard: null,
@@ -19,7 +19,7 @@ const EmployeeDocForm = () => {
   const { userInfo } = useSelector((state) => state.authReducer);
 
   const id = router.query.id || userInfo._id;
-  // const { userInfo } = useSelector((state) => state.authReducer);
+ 
   console.log("useInfo..................",userInfo.isAdmin)
   
   const handleFileChange = (e, documentType) => {
@@ -37,6 +37,7 @@ const EmployeeDocForm = () => {
 
     if (selectedFiles.every((file) => file === null)) {
       setError("Please select at least one file");
+       toast.error(error)
       return;
     }
 
@@ -60,6 +61,8 @@ const EmployeeDocForm = () => {
 
       if (response.ok) {
         setSuccessMessage("Files uploaded successfully");
+       
+        
         setFiles({
           adhaarCard: null,
           panCard: null,
@@ -67,13 +70,15 @@ const EmployeeDocForm = () => {
           marksheet12th: null,
           voterId: null,
         });
-        toast.success("File Upload Successful");
+        toast.success(successMessage)
       } else {
         setError("Error uploading files");
+        toast.error(error)
       }
     } catch (error) {
       console.error("Error:", error);
       setError("An unexpected error occurred");
+      toast.error(error)
     } finally {
       setLoading(false);
     }
