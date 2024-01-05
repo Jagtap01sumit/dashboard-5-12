@@ -36,7 +36,7 @@ const sendOTPverificationEmail = async ({ _id, email }, res) => {
       TEMPLATE_VERIFY_YOUR_EMAIL(process.env.USER_EMAIL, email, otp)
     );
 
-    console.log(mailSent);
+    // console.log(mailSent);
 
     res.json({
       status: "PENDING",

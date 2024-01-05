@@ -21,12 +21,12 @@ const EmployeeDetails = ({ employee }) => {
   const handleRemoveEmployee = () => {
     if (employee) dispatch(removeEmployee(employee?._id));
   };
-  const towordEditForm=()=>{
-    router.push(`/editForm/${employee?._id}`)
-  } 
-//   <Link href={`/editTopic/${t._id}`}>
-//   <HiPencilAlt size={24} />
-// </Link>
+  const towordEditForm = () => {
+    router.push(`/admin/dashboard/editForm/${employee?._id}`);
+  };
+  //   <Link href={`/editTopic/${t._id}`}>
+  //   <HiPencilAlt size={24} />
+  // </Link>
 
   useEffect(() => {
     if (!error && actionT === "remove") {

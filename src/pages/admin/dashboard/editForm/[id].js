@@ -1,64 +1,73 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import ProfileEditForm from "@/components/forms/profileEditForm";
+import { useForm } from "react-hook-form";
+import { useRouter } from "next/router";
 
-export default async function EditTopicForm({params}) {
- 
-
+export default function EditTopicForm({ params }) {
   const router = useRouter();
+  const { id } = router.query;
+  const formData = useForm();
 
-  const getUserDetails = async (e) => {
-    e.preventDefault();
-
+  const saveEmployee = async () => {
     try {
-      const res = await fetch(`http://localhost:3000/api/admin/editForm/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-type": "application/json",
-        },
-        body: JSON.stringify({ newTitle, newDescription }),
-      });
-
+      const res = await fetch(
+        "http://localhost:3000/api/admin/update-employee-detail",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ...formData.getValues("profileEdit") }),
+        }
+      );
       if (!res.ok) {
-        throw new Error("Failed to update topic");
+        throw new Error("Failed to updated");
       }
 
-      router.refresh();
-      router.push("/");
+      console.log("UPDATED EMPLOYEE: ", (await res.json()).data);
+    } catch (error) {}
+  };
+
+  const getUserDetails = async () => {
+    try {
+      const res = await fetch(
+        `http://localhost:3000/api/admin/get-employee-details`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/text" },
+          body: JSON.stringify({ id: id }),
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error("User does not exist");
+      }
+      const resJson = await res.json();
+      const { employee } = resJson;
+      if (employee) {
+        formData.setValue("profileEdit.firstName", employee.firstName);
+        formData.setValue("profileEdit.lastName", employee.lastName);
+        formData.setValue("profileEdit.email", employee.email);
+        formData.setValue("profileEdit.phone", employee.phone);
+        formData.setValue("profileEdit.designation", employee.designation);
+        formData.setValue("profileEdit.isManager", employee.isManager);
+        formData.setValue(
+          "profileEdit.teams",
+          employee.teams.map((team) => team._id)
+        );
+
+        formData.setValue("profileEdit.id", id);
+      }
     } catch (error) {
       console.log(error);
     }
   };
 
-  const {id}=params;
-  console.log("id",id);
-  const {name,lastname,email}=await getUserDetails(id);
+  useEffect(() => {
+    getUserDetails(id);
+  }, [id]);
 
   return (
-
-    // <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-    //   <input
-    //     onChange={(e) => setNewTitle(e.target.value)}
-    //     value={newTitle}
-    //     className="border border-slate-500 px-8 py-2"
-    //     type="text"
-    //     placeholder="Topic Title"
-    //   />
-
-    //   <input
-    //     onChange={(e) => setNewDescription(e.target.value)}
-    //     value={newDescription}
-    //     className="border border-slate-500 px-8 py-2"
-    //     type="text"
-    //     placeholder="Topic Description"
-    //   />
-
-    //   <button className="bg-green-600 font-bold text-white py-3 px-6 w-fit">
-    //     Update Topic
-    //   </button>
-    // </form>
-
-    <profileEditForm id={id} name={name} email={email} lastname={lastname}/>
+    <ProfileEditForm saveEmployee={saveEmployee} formData={formData} id={id} />
   );
 }
