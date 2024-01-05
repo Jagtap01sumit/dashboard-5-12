@@ -18,7 +18,7 @@ import {
   import { yupResolver } from "@hookform/resolvers/yup";
   import { getTeams } from "@/redux/actions/admin/teamAction";
 
-  const CreateEmployee = ({ id, title, description  }) => {
+  const CreateEmployee = ({ name,lastName,email  }) => {
     // const {
     //   register,
     //   handleSubmit,

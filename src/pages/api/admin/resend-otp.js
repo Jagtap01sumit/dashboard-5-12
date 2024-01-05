@@ -32,9 +32,11 @@ const sendOTPverificationEmail = async ({ _id, email }, res) => {
 
     await Admin.findByIdAndUpdate(_id, { otp: hashedOTP });
 
-    await sendMail(
+    const mailSent = await sendMail(
       TEMPLATE_VERIFY_YOUR_EMAIL(process.env.USER_EMAIL, email, otp)
     );
+
+    console.log(mailSent);
 
     res.json({
       status: "PENDING",

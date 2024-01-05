@@ -3,13 +3,12 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-export default function EditTopicForm({ id, title, description }) {
-  const [newTitle, setNewTitle] = useState(title);
-  const [newDescription, setNewDescription] = useState(description);
+export default async function EditTopicForm({params}) {
+ 
 
   const router = useRouter();
 
-  const handleSubmit = async (e) => {
+  const getUserDetails = async (e) => {
     e.preventDefault();
 
     try {
@@ -32,27 +31,34 @@ export default function EditTopicForm({ id, title, description }) {
     }
   };
 
+  const {id}=params;
+  console.log("id",id);
+  const {name,lastname,email}=await getUserDetails(id);
+
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-      <input
-        onChange={(e) => setNewTitle(e.target.value)}
-        value={newTitle}
-        className="border border-slate-500 px-8 py-2"
-        type="text"
-        placeholder="Topic Title"
-      />
 
-      <input
-        onChange={(e) => setNewDescription(e.target.value)}
-        value={newDescription}
-        className="border border-slate-500 px-8 py-2"
-        type="text"
-        placeholder="Topic Description"
-      />
+    // <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+    //   <input
+    //     onChange={(e) => setNewTitle(e.target.value)}
+    //     value={newTitle}
+    //     className="border border-slate-500 px-8 py-2"
+    //     type="text"
+    //     placeholder="Topic Title"
+    //   />
 
-      <button className="bg-green-600 font-bold text-white py-3 px-6 w-fit">
-        Update Topic
-      </button>
-    </form>
+    //   <input
+    //     onChange={(e) => setNewDescription(e.target.value)}
+    //     value={newDescription}
+    //     className="border border-slate-500 px-8 py-2"
+    //     type="text"
+    //     placeholder="Topic Description"
+    //   />
+
+    //   <button className="bg-green-600 font-bold text-white py-3 px-6 w-fit">
+    //     Update Topic
+    //   </button>
+    // </form>
+
+    <profileEditForm id={id} name={name} email={email} lastname={lastname}/>
   );
 }
